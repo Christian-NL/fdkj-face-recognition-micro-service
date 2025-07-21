@@ -1,0 +1,32 @@
+# **Face Comparison API**  
+
+A simple Flask microservice that checks if two images contain the same face using AI.  
+
+## **🚀 Quick Start**  
+1. Install:  
+```bash
+git clone https://github.com/yourusername/face-comparison-api.git
+cd face-comparison-api
+pip install -r requirements.txt
+```
+
+2. Run:  
+```bash
+python app.py
+```
+
+3. Test:  
+```bash
+curl -X POST -F "image1=@person1.jpg" -F "image2=@person2.jpg" http://localhost:5000/api/compare-faces
+```
+
+## **🛠️ Features**  
+✅ Compares faces in two images  
+✅ Simple API endpoint (`POST /api/compare-faces`)  
+✅ Error handling (missing faces, invalid requests)  
+
+## **⚙️ Configuration**  
+Edit `config.py` to adjust face matching sensitivity.  
+
+## **📜 License**  
+MIT  
