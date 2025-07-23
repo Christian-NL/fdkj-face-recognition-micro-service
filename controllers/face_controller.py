@@ -13,6 +13,7 @@ class FaceController:
                 request.files['image1'],
                 request.files['image2']
             )
-            return jsonify({"same_face": bool(is_same)})
+            return bool(is_same)
+            # return jsonify({"same_face": bool(is_same)})
         except ValueError as e:
             raise FaceDetectionError(str(e))
