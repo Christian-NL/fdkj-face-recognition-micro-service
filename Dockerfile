@@ -1,26 +1,38 @@
-# Utilise une image Python officielle
-FROM python:3.9
+# Utiliser une image Python optimisée avec Debian Slim
+FROM python:3.9-slim-bullseye
 
-# Dossier de travail dans le container
+# Dossier de travail
 WORKDIR /app
 
-# Installer les dépendances système
+# Installer les dépendances système nécessaires à face_recognition et opencv
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
     cmake \
+    g++ \
+    libopenblas-dev \
+    liblapack-dev \
+    libjpeg-dev \
+    libpng-dev \
+    libtiff-dev \
+    libavcodec-dev \
+    libavformat-dev \
+    libswscale-dev \
+    libv4l-dev \
+    libxvidcore-dev \
+    libx264-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copie les fichiers nécessaires
+# Copier les fichiers de l'application
 COPY requirements.txt .
 COPY app.py .
 COPY config.py .
 COPY ReadMe .
 
-# Installe les dépendances
+# Installer les dépendances Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Port exposé (le même que dans ton app Flask)
+# Exposer le port Flask
 EXPOSE 5000
 
-# Commande pour lancer l'application
+# Commande par défaut
 CMD ["python", "app.py"]
