@@ -1,8 +1,14 @@
 # Utilise une image Python officielle
-FROM python:3.9-slim
+FROM python:3.9
 
 # Dossier de travail dans le container
 WORKDIR /app
+
+# Installer les dépendances système
+RUN apt-get update && \
+    apt-get install -y \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copie les fichiers nécessaires
 COPY requirements.txt .
