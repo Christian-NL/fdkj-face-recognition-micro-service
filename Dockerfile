@@ -9,8 +9,6 @@ COPY requirements.txt .
 COPY app.py .
 COPY config.py .
 COPY ReadMe .
-COPY templates/ ./templates/
-COPY static/ ./static/
 
 # Installe les dépendances
 RUN pip install --no-cache-dir -r requirements.txt
