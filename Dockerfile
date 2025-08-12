@@ -1,32 +1,41 @@
-# Utilise l'image officielle miniconda (plus léger que Anaconda)
-FROM continuumio/miniconda3:4.9.2
+# ---------- Étape 1 : build ----------
+FROM python:3.9-slim AS builder
 
-# Crée l'environnement conda avec les dépendances pré-compilées
-RUN conda create -n myenv python=3.9 \
-    && conda install -n myenv -c conda-forge \
-    dlib=19.24 \
-    face_recognition=1.3.0 \
-    flask=2.0.1 \
-    numpy=1.21.2 \
-    opencv=4.5.2 \
-    && conda clean -afy
-
-# Configure l'environnement
-ENV PATH /opt/conda/envs/myenv/bin:$PATH
-
-# Dossier de travail
 WORKDIR /app
 
-# Copie des fichiers (seulement le nécessaire)
-COPY app.py .
-COPY config.py .
+# Installer les outils de compilation et dépendances
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    git \
+    libjpeg-dev \
+    libpng-dev \
+    libopenblas-dev \
+    liblapack-dev \
+    libtiff-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
 
-# Installation des dépendances pip supplémentaires si nécessaire
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-# Port exposé
+# ---------- Étape 2 : image finale ----------
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Installer les dépendances runtime avec les noms corrects pour Debian Bookworm
+RUN apt-get update && apt-get install -y \
+    libjpeg62-turbo \
+    libpng16-16 \
+    libopenblas0 \
+    liblapack3 \
+    libtiff6 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /install /usr/local
+COPY . .
+
 EXPOSE 5000
-
-# Commande de lancement
 CMD ["python", "app.py"]
